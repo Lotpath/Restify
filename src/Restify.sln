@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restify", "Restify\Restify.csproj", "{E44D7282-B9D0-42EA-BFDD-9C4371EB955A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{51A8487E-AE9E-4538-B994-C8ECFF9D2C8D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B044994C-B991-478C-9BE3-B774A48FB661}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\build.cake = ..\build.cake
+		..\build.cmd = ..\build.cmd
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+		..\ReleaseNotes.md = ..\ReleaseNotes.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restify.Tests", "Restify.Tests\Restify.Tests.csproj", "{484EC610-CDB2-4955-97C3-B1617CAC7C03}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B3B49C39-1818-409C-B090-CD0DC76BB3D7}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E44D7282-B9D0-42EA-BFDD-9C4371EB955A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E44D7282-B9D0-42EA-BFDD-9C4371EB955A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E44D7282-B9D0-42EA-BFDD-9C4371EB955A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E44D7282-B9D0-42EA-BFDD-9C4371EB955A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{484EC610-CDB2-4955-97C3-B1617CAC7C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{484EC610-CDB2-4955-97C3-B1617CAC7C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{484EC610-CDB2-4955-97C3-B1617CAC7C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{484EC610-CDB2-4955-97C3-B1617CAC7C03}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{484EC610-CDB2-4955-97C3-B1617CAC7C03} = {51A8487E-AE9E-4538-B994-C8ECFF9D2C8D}
+	EndGlobalSection
+EndGlobal
