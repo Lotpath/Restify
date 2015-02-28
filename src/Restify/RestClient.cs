@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Restify
         private Uri _defaultBaseUrl;
         private ProductInfoHeaderValue _userAgent;
         private Func<AuthenticationHeaderValue> _authenticationHeaderFactory;
+        private readonly Dictionary<string, IEnumerable<string>> _headers = new Dictionary<string, IEnumerable<string>>();
         private ISerializer _serializer = new Serializer();
 
         public RestClient(Action<RestClientConfigurer> configure)
@@ -60,7 +62,7 @@ namespace Restify
                 var stream = new AdaptedStream(response, await response.Content.ReadAsStreamAsync());
                 return new RestResponse<Stream>(response, stream) as RestResponse<TData>;
             }
-            
+
             using (var response = await SendAsync(method, route, PrepareContent(payload)))
             {
                 if (!response.IsSuccessStatusCode)
@@ -167,6 +169,20 @@ namespace Restify
             {
                 client.DefaultRequestHeaders.Authorization = _authenticationHeaderFactory();
             }
+            if (_headers.Any())
+            {
+                foreach (var header in _headers)
+                {
+                    if (header.Value.Count() == 1)
+                    {
+                        client.DefaultRequestHeaders.Add(header.Key, header.Value.First());
+                    }
+                    else
+                    {
+                        client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    }
+                }
+            }
 
             return client;
         }
@@ -200,22 +216,48 @@ namespace Restify
             /// <summary>
             /// Configure the UserAgent Http Header
             /// </summary>
-            /// <param name="userAgent"></param>
+            /// <param name="name"></param>
+            /// <param name="version"></param>
             /// <returns></returns>
-            public RestClientConfigurer UserAgent(ProductInfoHeaderValue userAgent)
+            public RestClientConfigurer UserAgent(string name, string version = null)
             {
-                _client._userAgent = userAgent;
+                _client._userAgent = new ProductInfoHeaderValue(new ProductHeaderValue(name, version));
                 return this;
             }
 
             /// <summary>
             /// Configure the Authorization Http Header
             /// </summary>
-            /// <param name="authenticationHeaderFactory"></param>
+            /// <param name="scheme"></param>
+            /// <param name="parameter"></param>
             /// <returns></returns>
-            public RestClientConfigurer Authorization(Func<AuthenticationHeaderValue> authenticationHeaderFactory)
+            public RestClientConfigurer Authorization(string scheme, Func<string> parameter)
             {
-                _client._authenticationHeaderFactory = authenticationHeaderFactory;
+                _client._authenticationHeaderFactory = () => new AuthenticationHeaderValue(scheme, parameter());
+                return this;
+            }
+
+            /// <summary>
+            /// Add a default request header
+            /// </summary>
+            /// <param name="key"></param>
+            /// <param name="value"></param>
+            /// <returns></returns>
+            public RestClientConfigurer Header(string key, string value)
+            {
+                _client._headers[key] = new[] { value };
+                return this;
+            }
+
+            /// <summary>
+            /// Add a default request header
+            /// </summary>
+            /// <param name="key"></param>
+            /// <param name="value"></param>
+            /// <returns></returns>
+            public RestClientConfigurer Header(string key, IEnumerable<string> value)
+            {
+                _client._headers[key] = value;
                 return this;
             }
 
