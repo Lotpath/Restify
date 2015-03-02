@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Restify</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Lotpath, Inc.</authors>
+    <owners>Lotpath, Inc.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Query helpers and extensions.</description>
+    <language>en-US</language>
+    <copyright>Lotpath, Inc.</copyright>
+    <licenseUrl>https://github.com/Lotpath/Restify/blob/master/license.txt</licenseUrl>
+    <projectUrl>http://github.com/Lotpath/Restify</projectUrl>
+    <dependencies>
+    </dependencies>
+    <tags>Opinionated wrapper for System.Net.Http.HttpClient</tags>
+  </metadata>
+</package>

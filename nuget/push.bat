@@ -1,0 +1,1 @@
+..\src\.nuget\nuget push Restify.%1.nupkg %NUGET_API_KEY%
