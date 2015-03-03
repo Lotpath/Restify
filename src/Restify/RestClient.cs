@@ -59,6 +59,10 @@ namespace Restify
             if (typeof(TData) == typeof(Stream))
             {
                 var response = await SendAsync(method, route, PrepareContent(payload));
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new RestResponse<TData>(response, default(TData));
+                }
                 var stream = new AdaptedStream(response, await response.Content.ReadAsStreamAsync());
                 return new RestResponse<Stream>(response, stream) as RestResponse<TData>;
             }

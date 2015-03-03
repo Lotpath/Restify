@@ -4,22 +4,27 @@ using System.Threading.Tasks;
 
 namespace Restify
 {
-    public class Fetcher
+    public interface IFetcher
+    {
+        Task<IEnumerable<TData>> FetchAsync<TData>(ISpecification specification, FetchStrategy strategy = FetchStrategy.ApiThenCache)
+            where TData : new();
+    }
+
+    public class Fetcher : IFetcher
     {
         private readonly IRestClient _restClient;
-        private readonly IDataGateway _dataGateway;
+        private readonly ICacheManager _cacheManager;
         private readonly INetworkService _networkService;
 
-        public Fetcher(IRestClient restClient, IDataGateway dataGateway, INetworkService networkService)
+        public Fetcher(IRestClient restClient, ICacheManager cacheManager, INetworkService networkService)
         {
             _restClient = restClient;
-            _dataGateway = dataGateway;
+            _cacheManager = cacheManager;
             _networkService = networkService;
         }
 
-        public async Task<IList<TData>> FetchAsync<TData, TSpecification>(TSpecification specification = null, FetchStrategy strategy = FetchStrategy.ApiThenCache)
+        public async Task<IEnumerable<TData>> FetchAsync<TData>(ISpecification specification, FetchStrategy strategy = FetchStrategy.ApiThenCache)
             where TData : new()
-            where TSpecification : class, ISpecification
         {
             if (!_networkService.IsConnected)
             {
@@ -49,7 +54,7 @@ namespace Restify
             }
         }
 
-        private async Task<IList<TData>> FetchFromApiAndAddToCacheAsync<TData>(ISpecification specification)
+        private async Task<IEnumerable<TData>> FetchFromApiAndAddToCacheAsync<TData>(ISpecification specification)
             where TData : new()
         {
             var response = await FetchFromApi<TData>(specification);
@@ -72,15 +77,15 @@ namespace Restify
             return response;
         }
 
-        private async Task<IList<TData>> FetchFromLocalCache<TData>(ISpecification specification)
+        private async Task<IEnumerable<TData>> FetchFromLocalCache<TData>(ISpecification specification)
             where TData : new()
         {
-            return await _dataGateway.Fetch<TData>(specification);
+            return await _cacheManager.QueryAsync<TData>(specification);
         }
 
         private async Task SaveToLocalCache<T>(IEnumerable<T> items)
         {
-            await _dataGateway.InsertOrReplaceAll(items);
+            await _cacheManager.AddOrReplaceAllAsync(items);
         }
     }
 }

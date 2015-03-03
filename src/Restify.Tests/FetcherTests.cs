@@ -12,7 +12,7 @@ namespace Restify.Tests
     public class FetcherTests
     {
         private readonly IRestClient _client;
-        private readonly IDataGateway _gateway;
+        private readonly ICacheManager _cacheManager;
         private readonly INetworkService _networkService;
         private readonly List<Product> _products = new List<Product>();
         private readonly Fetcher _fetcher;
@@ -20,7 +20,7 @@ namespace Restify.Tests
         public FetcherTests()
         {
             _client = A.Fake<IRestClient>();
-            _gateway = A.Fake<IDataGateway>();
+            _cacheManager = A.Fake<ICacheManager>();
             _networkService = A.Fake<INetworkService>();
             _products.Add(new Product
                 {
@@ -40,7 +40,7 @@ namespace Restify.Tests
             A.CallTo(() => _client.GetAsync<List<Product>>(A<string>.That.Contains("*")))
                 .Throws(new Exception("oh noes!"));
 
-            _fetcher = new Fetcher(_client, _gateway, _networkService);
+            _fetcher = new Fetcher(_client, _cacheManager, _networkService);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Restify.Tests
             A.CallTo(() => _networkService.IsConnected)
                 .MustHaveHappened(Repeated.Exactly.Once);
 
-            A.CallTo(() => _gateway.Fetch<Product>(A<ISpecification>._))
+            A.CallTo(() => _cacheManager.QueryAsync<Product>(A<ISpecification>._))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -79,7 +79,7 @@ namespace Restify.Tests
             A.CallTo(() => _networkService.IsConnected)
                 .MustHaveHappened(Repeated.Exactly.Once);
 
-            A.CallTo(() => _gateway.Fetch<Product>(A<ISpecification>._))
+            A.CallTo(() => _cacheManager.QueryAsync<Product>(A<ISpecification>._))
                 .MustHaveHappened();
         }
 
@@ -99,13 +99,13 @@ namespace Restify.Tests
             A.CallTo(() => _networkService.IsConnected)
                 .MustHaveHappened(Repeated.Exactly.Once);
 
-            A.CallTo(() => _gateway.Fetch<Product>(A<ISpecification>._))
+            A.CallTo(() => _cacheManager.QueryAsync<Product>(A<ISpecification>._))
                 .MustNotHaveHappened();
 
             A.CallTo(() => _client.GetAsync<List<Product>>(A<string>._))
                 .MustHaveHappened(Repeated.Exactly.Once);
 
-            A.CallTo(() => _gateway.InsertOrReplaceAll(A<IEnumerable<Product>>._))
+            A.CallTo(() => _cacheManager.AddOrReplaceAllAsync(A<IEnumerable<Product>>._))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -128,10 +128,10 @@ namespace Restify.Tests
             A.CallTo(() => _client.GetAsync<List<Product>>(A<string>._))
                 .MustHaveHappened(Repeated.Exactly.Once);
 
-            A.CallTo(() => _gateway.InsertOrReplaceAll(A<IEnumerable<Product>>._))
+            A.CallTo(() => _cacheManager.AddOrReplaceAllAsync(A<IEnumerable<Product>>._))
                 .MustNotHaveHappened();
 
-            A.CallTo(() => _gateway.Fetch<Product>(A<ISpecification>._))
+            A.CallTo(() => _cacheManager.QueryAsync<Product>(A<ISpecification>._))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -160,7 +160,7 @@ namespace Restify.Tests
             A.CallTo(() => _networkService.IsConnected)
              .Returns(false);
 
-            A.CallTo(() => _gateway.Fetch<Product>(A<ISpecification>._))
+            A.CallTo(() => _cacheManager.QueryAsync<Product>(A<ISpecification>._))
              .Throws(new Exception("oh noes!"));
 
             var ex = await AssertEx.RecordAsync(async () =>

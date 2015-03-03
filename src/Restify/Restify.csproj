@@ -38,10 +38,10 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="DataGateway.cs" />
+    <Compile Include="CacheManager.cs" />
     <Compile Include="Fetcher.cs" />
     <Compile Include="FetchStrategy.cs" />
-    <Compile Include="IDataGateway.cs" />
+    <Compile Include="ICacheManager.cs" />
     <Compile Include="INetworkService.cs" />
     <Compile Include="ISpecification.cs" />
     <Compile Include="RestifyException.cs" />
